@@ -1,38 +1,41 @@
 package se.nackademin.rest.test.model;
 
 public class Book {
-    private int id;
-    private String descrition;
+    
+    private Object author;
+    
+    private Integer id;
+    private String description;
     private String isbn;
-    private int nbOfPage;   
+    private Integer nbOfPage;   
     private String title;
 
     /**
      * @return the id
      */
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * @return the descrition
+     * @return the description
      */
-    public String getDescrition() {
-        return descrition;
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * @param descrition the descrition to set
+     * @param descrition the description to set
      */
-    public void setDescrition(String descrition) {
-        this.descrition = descrition;
+    public void setDescription(String descrition) {
+        this.description = descrition;
     }
 
     /**
@@ -52,14 +55,14 @@ public class Book {
     /**
      * @return the nbOfPage
      */
-    public int getNbOfPage() {
+    public Integer getNbOfPage() {
         return nbOfPage;
     }
 
     /**
      * @param nbOfPage the nbOfPage to set
      */
-    public void setNbOfPage(int nbOfPage) {
+    public void setNbOfPage(Integer nbOfPage) {
         this.nbOfPage = nbOfPage;
     }
 
@@ -75,6 +78,20 @@ public class Book {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    /**
+     * @return the author
+     */
+    public Object getAuthor() {
+        return author;
+    }
+
+    /**
+     * @param author the author to set
+     */
+    public void setAuthor(Object author) {
+        this.author = author;
     }
             
     

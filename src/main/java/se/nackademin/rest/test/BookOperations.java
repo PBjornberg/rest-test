@@ -1,50 +1,121 @@
-
 package se.nackademin.rest.test;
 
-import static com.jayway.restassured.RestAssured.delete;
-import static com.jayway.restassured.RestAssured.given;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
 import java.util.Random;
 import java.util.UUID;
+import se.nackademin.rest.test.model.Author;
+import se.nackademin.rest.test.model.Book;
+import se.nackademin.rest.test.model.SingleAuthor;
+import se.nackademin.rest.test.model.SingleBook;
+import static com.jayway.restassured.RestAssured.given;
 
+/**
+ * This class contains boilerplate code for REST tests in MyFirstRestTest.java
+ * @author Peter Björnberg
+ */
 public class BookOperations {
     private static final String BASE_URL = "http://localhost:8080/librarytest/rest/";
-    private String jsonString = "";
-    public Response getBook(int id){
-        String resourceName = "books/"+id;
-        return given().accept(ContentType.JSON).get(BASE_URL + resourceName);
-    }
-    public Response createRandomBook(){
-        String title = UUID.randomUUID().toString();
-        String description = UUID.randomUUID().toString();
-        String isbn = UUID.randomUUID().toString();     
-        String resourceName = "books";
-        String postBodyTemplate = "{\n"
-                + "\"book\":\n"
-                + "  {\n"
-                + "    \"description\":\"%s\",\n"
-                + "    \"isbn\":\"%s\",\n"
-                + "    \"nbOfPage\":%s,\n"
-                + "    \"title\":\"%s\"\n"
-                + "  }\n"
-                + "}";
-        String postBody = String.format(postBodyTemplate,description,isbn,""+new Random().nextInt(500),title);
-        jsonString = postBody;
-        return given().contentType(ContentType.JSON).body(postBody).post(BASE_URL + resourceName);
+    
+    private Book book;
+    private Author author;
+
+    public Response createRandomAuthor(){     
+        author = new Author();
+        author.setName(UUID.randomUUID().toString());  
+        
+        SingleAuthor singleAuthor = new SingleAuthor(author);
+        
+        String resourceName = "authors";
+        return given().contentType(ContentType.JSON).body(singleAuthor).log().all().post(BASE_URL + resourceName);       
     }
     
-    public String getLatestJsonString(){
-        return jsonString;
+    public Response getAuthor(Integer id){
+        String resourceName = "authors/" + id.intValue();
+        return given().accept(ContentType.JSON).log().all().get(BASE_URL + resourceName);
+    }     
+    
+     public Response getAllAuthors(){
+        String resourceName = "authors";
+        return given().accept(ContentType.JSON).log().all().get(BASE_URL + resourceName); 
+    } 
+    
+    public Response updateAuthor(Author author){
+        
+        SingleAuthor singleAuthor = new SingleAuthor(author);
+        
+        String resourceName = "authors";
+        return given().contentType(ContentType.JSON).body(singleAuthor).log().all().put(BASE_URL + resourceName);       
+    }    
+
+    public Response deleleAuthor(int authorId){
+        String deleteResourceName = BASE_URL+"authors/"+authorId;      
+        return given().contentType(ContentType.JSON).log().all().delete(deleteResourceName);
+    }    
+
+  public Response createRandomBook(){
+        
+        book = new Book();
+        book.setDescription(UUID.randomUUID().toString());
+        book.setIsbn(UUID.randomUUID().toString());
+        book.setNbOfPage(new Random().nextInt(400)+20);
+        book.setTitle(UUID.randomUUID().toString());
+        book.setAuthor(author);
+        
+        SingleBook singleBook = new SingleBook(book);
+        
+        String resourceName = "books";
+        return given().contentType(ContentType.JSON).body(singleBook).log().all().post(BASE_URL + resourceName);       
+    }
+    
+    public Response getBook(int bookId){
+        String resourceName = "books/"+bookId;
+        return given().accept(ContentType.JSON).log().all().get(BASE_URL + resourceName);
     }
     
     public Response getAllBooks(){
         String resourceName = "books";
-        return given().accept(ContentType.JSON).get(BASE_URL + resourceName).prettyPeek();    
+        return given().accept(ContentType.JSON).log().all().get(BASE_URL + resourceName); 
+    } 
+
+    public Response getAllBooksByAuthor(int authorId){
+        String resourceName = "books/byauthor/"+authorId;
+        return given().accept(ContentType.JSON).log().all().get(BASE_URL + resourceName); 
+    } 
+   
+    public Response updateBook(Book book){
+        
+        SingleBook singleBook = new SingleBook(book);
+        
+        String resourceName = "books";
+        return given().contentType(ContentType.JSON).body(singleBook).log().all().put(BASE_URL + resourceName);
+    }
+    
+    public Response addAuthorToBook(int bookId, Author author){
+        
+        SingleAuthor singleAuthor = new SingleAuthor(author);
+        
+        String resourceName = "books/"+bookId+"/authors";
+        return given().contentType(ContentType.JSON).body(singleAuthor).log().all().post(BASE_URL + resourceName);
     }
     
     public Response deleleBook(int id){
-        String deleteResourceName = BASE_URL+"books/"+id;      
-        return delete(deleteResourceName);
+        String deleteResourceName = BASE_URL+"books/"+id;  
+        return given().contentType(ContentType.JSON).log().all().delete(deleteResourceName);
+    }
+    
+
+    /**
+     * @return the book
+     */
+    public Book getBook(){
+        return book;
+    }
+
+    /**
+     * @param author the author to set
+     */
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 }
